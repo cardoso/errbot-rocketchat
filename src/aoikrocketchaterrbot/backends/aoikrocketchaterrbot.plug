@@ -1,0 +1,6 @@
+[Core]
+Name = AoikRocketChatErrbot
+Module = aoikrocketchaterrbot
+
+[Documentation]
+Description = Errbot backend for Rocket.Chat.
