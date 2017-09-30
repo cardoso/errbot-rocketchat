@@ -1,4 +1,4 @@
-# AoikRocketChatErrbot
+# Errbot Rocket.Chat
 [Errbot](http://errbot.io/) backend for [Rocket.Chat](https://rocket.chat/).
 
 The backend logs in as a Rocket.Chat user, receiving and sending messages.
