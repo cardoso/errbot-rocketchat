@@ -441,6 +441,10 @@ class AoikRocketChatErrbot(ErrBot):
         # Log the message
         self._logger.debug(msg)
 
+    def __hash__(self):
+        """Bots are now stored as a key in the bot so they need to be hashable."""
+        return id(self)
+
     def _log_error(self, msg):
         """
         Log error message.
@@ -936,7 +940,7 @@ class AoikRocketChatErrbot(ErrBot):
                 name='stream-room-messages',
                 params=[
                     # All messages from rooms the rocket chat user has joined
-                    '__my_messages__',
+                    '__my_messages__', False,
                 ],
                 # 6BKIR
                 callback=self._meteor_subscribe_callback,
