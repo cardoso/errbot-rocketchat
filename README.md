@@ -4,8 +4,8 @@
 The backend logs in as a Rocket.Chat user, receiving and sending messages.
 
 Tested working with:
-- Rocket.Chat 0.48.1
-- Errbot 4.3.4
+- Rocket.Chat 0.65.1
+- Errbot 5.2
 - Python 3.5
 
 ## Table of Contents
@@ -18,6 +18,7 @@ Tested working with:
   - [Install AoikRocketChatErrbot](#install-aoikrocketchaterrbot)
   - [Tweak Errbot config module](#tweak-errbot-config-module)
   - [Start Errbot](#start-errbot)
+  - [systemd file](#systemd-file)
 
 ## Set up Rocket.Chat server
 - [Create docker-compose.yml file](#create-docker-composeyml-file)
@@ -62,19 +63,22 @@ Create a new user. The default config in AoikRocketChatErrbot uses username
 - [Install AoikRocketChatErrbot](#install-aoikrocketchaterrbot)
 - [Tweak Errbot config module](#tweak-errbot-config-module)
 - [Start Errbot](#start-errbot)
+- [systemd file](#systemd-file)
 
 ### Clone this repository to local
 Run:
 ```
-git clone https://github.com/AoiKuiyuyou/AoikRocketChatErrbot
+git clone https://github.com/cardoso/errbot-rocketchat
 ```
 
 ### Install AoikRocketChatErrbot
 Run:
 ```
-cd AoikRocketChatErrbot
+cd errbot-rocketchat
 
-python setup.py install
+virtualenv venv
+
+venv/bin/python setup.py install
 ```
 
 This will install AoikRocketChatErrbot's dependency packages, including Errbot.
@@ -84,6 +88,7 @@ The Errbot config module is located at
 [AoikRocketChatErrbot/src/aoikrocketchaterrbot/config.py](/src/aoikrocketchaterrbot/config.py).
 
 Tweak config values under AOIKROCKETCHATERRBOT_CONFIG:
+- BOT_ADMINS (no @ prefix)
 - SERVER_URI
 - LOGIN_USERNAME
 - LOGIN_PASSWORD
@@ -94,4 +99,32 @@ Run:
 cd AoikRocketChatErrbot/src/aoikrocketchaterrbot
 
 python -m errbot.cli
+```
+
+### systemd file
+It is very easy to set up a daemon process for Errbots. For security reasons it should always be runned by a non-sudo user: `sudo useradd -m --user-group errbot-runner`
+
+Create the following systemd file `sudo vim /etc/systemd/system/errbot.service`:
+```
+[Unit]
+Description=Errbot chatbot for Rocket.Chat
+After=network.target
+
+[Service]
+Environment="LC_ALL=en_US.UTF-8"
+ExecStart=/home/errbot-runner/errbot-rocketchat/venv/bin/python -m errbot.cli
+Restart=always
+RestartSec=10
+WorkingDirectory=/home/errbot-runner/errbot-rocketchat/src/aoikrocketchaterrbot
+User=errbot-runner
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Start the daemon and enable it to start at system reboot:
+```
+sudo systemctl start errbot.service
+sudo systemctl enable errbot.service
 ```
