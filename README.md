@@ -19,7 +19,7 @@ Tested working with:
   - [Tweak Errbot config module](#tweak-errbot-config-module)
   - [Start Errbot](#start-errbot)
   - [systemd file](#systemd-file)
-
+  - [using-docker](#Docker)
 ## Set up Rocket.Chat server
 - [Create docker-compose.yml file](#create-docker-composeyml-file)
 - [Start Rocket.Chat server](#start-rocketchat-server)
@@ -128,3 +128,9 @@ Start the daemon and enable it to start at system reboot:
 sudo systemctl start errbot.service
 sudo systemctl enable errbot.service
 ```
+
+### Docker 
+
+ To use the Dockerfile you simply need to create  a config file in the root of the project with the config you wish to load. 
+ then inside the source directory ``` docker build -t rocketchaterrbot . 
+ docker run rocketchaterrbot ```
