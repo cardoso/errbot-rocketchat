@@ -19,7 +19,7 @@ Tested working with:
   - [Tweak Errbot config module](#tweak-errbot-config-module)
   - [Start Errbot](#start-errbot)
   - [systemd file](#systemd-file)
-  - [using-docker](#Docker)
+  - [using docker](#Docker)
 ## Set up Rocket.Chat server
 - [Create docker-compose.yml file](#create-docker-composeyml-file)
 - [Start Rocket.Chat server](#start-rocketchat-server)
