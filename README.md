@@ -132,5 +132,5 @@ sudo systemctl enable errbot.service
 ### Docker 
 
  To use the Dockerfile you simply need to create  a config file in the root of the project with the config you wish to load. 
- then inside the source directory ``` docker build -t rocketchaterrbot . 
+ then inside the source directory ``` docker build -t rocketchaterrbot . && 
  docker run rocketchaterrbot ```
