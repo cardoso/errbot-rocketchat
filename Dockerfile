@@ -5,12 +5,12 @@ RUN apk update && apk upgrade && \
 
 RUN useradd -u 9999 errbot
 
-Run  git clone https://github.com/cardoso/errbot-rocketchat
+RUN git clone https://github.com/cardoso/errbot-rocketchat
 RUN chown -R errbot  errbot-rocketchat
 
 WORKDIR errbot-rocketchat
 
-Run python setup.py install
+RUN python setup.py install
 
 
 WORKDIR /AoikRocketChatErrbot/src/aoikrocketchaterrbot
