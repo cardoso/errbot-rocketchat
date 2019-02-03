@@ -103,7 +103,7 @@ class CONFIG_KEYS(object):
     attribute names, i.e. CONFIG_KEYS.SERVER_URI == 'SERVER_URI'.
 
     Config values can be overridden by env variables. Config key `SERVER_URI`
-    maps to env variable name `AOIKROCKETCHATERRBOT_SERVER_URI`. Use string
+    maps to env variable name `ROCKETCHAT_SERVER_URI`. Use string
     '0', 'false' or 'no' to mean boolean false in env variable value.
 
     The prefix used when mapping config name to env variable name is defined at
@@ -170,15 +170,15 @@ class CONFIG_KEYS(object):
 
 
 # The backend's config object's attribute name on the config module
-_CONFIG_OBJ_KEY = 'AOIKROCKETCHATERRBOT_CONFIG'
+_CONFIG_OBJ_KEY = 'ROCKETCHAT_CONFIG'
 
 # 5IQNR
 # Prefix used when mapping config name to env variable name.
 #
 # E.g. Config key `SERVER_URI` maps to env variable name
-# `AOIKROCKETCHATERRBOT_SERVER_URI`.
+# `ROCKETCHAT_SERVER_URI`.
 #
-_ENV_VAR_NAME_PREFIX = 'AOIKROCKETCHATERRBOT_'
+_ENV_VAR_NAME_PREFIX = 'ROCKETCHAT_'
 
 
 class RocketChatUser(Person):
@@ -265,7 +265,7 @@ class RocketChatUser(Person):
         return self._person
 
 
-class AoikRocketChatErrbot(ErrBot):
+class RocketChat(ErrBot):
     """
     Errbot backend for Rocket.Chat.
 
@@ -281,7 +281,7 @@ class AoikRocketChatErrbot(ErrBot):
         :return: None.
         """
         # Call super method
-        super(AoikRocketChatErrbot, self).__init__(config)
+        super(RocketChat, self).__init__(config)
 
         # Get the backend's config object
         self._config_obj = getattr(self.bot_config, _CONFIG_OBJ_KEY, None)
@@ -1228,7 +1228,7 @@ class AoikRocketChatErrbot(ErrBot):
         :return: None.
         """
         # Call super method to dispatch to plugins
-        super(AoikRocketChatErrbot, self).send_message(mess)
+        super(RocketChat, self).send_message(mess)
 
         # Get original message object.
         #

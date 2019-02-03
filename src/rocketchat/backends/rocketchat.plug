@@ -1,0 +1,6 @@
+[Core]
+Name = RocketChat
+Module = rocketchat
+
+[Documentation]
+Description = Rocket.Chat backend for Errbot.
