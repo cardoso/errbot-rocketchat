@@ -752,7 +752,7 @@ class RocketChat(ErrBot):
             self._meteor_client.connect()
 
         # If have error
-        except:
+        except Exception as e:
             # Log message
             self._log_debug('# ----- Connecting failed -----')
 
@@ -821,7 +821,7 @@ class RocketChat(ErrBot):
             self._meteor_closed_event.wait()
 
         # If have error
-        except:
+        except Exception as e:
             # Close meteor client.
             #
             # This will cause `self._meteor_closed_callback` to be called,
@@ -1284,13 +1284,22 @@ class RocketChat(ErrBot):
             # Raise error
             raise ValueError(error_msg)
 
-        # If the original message is not given
+        # If the original message is not given, emulate receiving a message to confirm with.
         if in_reply_to is None:
-            # Get message
-            error_msg = 'Argument `in_reply_to` must be given.'
+            # Fetch the room_id for the identifier.
+            room_id = self._meteor_client.call(
+                method="createDirectMessage",
+                params=[identifier.person]
+            )
 
-            # Raise error
-            raise ValueError(error_msg)
+            if room_id is None:
+                raise ValueError("Unable to get room identity for {}".format(identifier.person))
+
+            in_reply_to = Message(
+                frm=identifier,
+                to=self.bot_identifier,
+                extra={"msg_info": {"rid": room_id}}
+            )
 
         # Create message object
         msg_obj = Message(
