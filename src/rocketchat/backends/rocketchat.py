@@ -326,7 +326,7 @@ class RocketChat(ErrBot):
             raise ValueError(error_msg)
 
         # Get logger
-        self._logger = logging.getLogger('aoikrocketchaterrbot')
+        self._logger = logging.getLogger('rocketchat')
 
         # Set logging level
         self._logger.setLevel(log_level)
@@ -428,7 +428,7 @@ class RocketChat(ErrBot):
         :return: Mode name.
         """
         # Return mode name
-        return 'aoikrocketchaterrbot'
+        return 'rocketchat'
 
     def _log_debug(self, msg):
         """
@@ -695,6 +695,7 @@ class RocketChat(ErrBot):
             # Disable the meteor client's auto reconnect.
             # Let `serve_forever` handle reconnect.
             auto_reconnect=False,
+            debug=False
         )
 
         # Log message
@@ -1286,20 +1287,8 @@ class RocketChat(ErrBot):
 
         # If the original message is not given, emulate receiving a message to confirm with.
         if in_reply_to is None:
-            # Fetch the room_id for the identifier.
-            room_id = self._meteor_client.call(
-                method="createDirectMessage",
-                params=[identifier.person]
-            )
-
-            if room_id is None:
-                raise ValueError("Unable to get room identity for {}".format(identifier.person))
-
-            in_reply_to = Message(
-                frm=identifier,
-                to=self.bot_identifier,
-                extra={"msg_info": {"rid": room_id}}
-            )
+            self.create_reply_msg(identifier, text)
+            return True
 
         # Create message object
         msg_obj = Message(
@@ -1326,6 +1315,23 @@ class RocketChat(ErrBot):
 
         # Send the message
         self.split_and_send_message(msg_obj)
+
+    def create_reply_msg(self, identifier, text):
+        def query_user_callback(*args, **kwargs):
+            in_reply_to = Message(
+                body=text,
+                frm=identifier,
+                to=self.bot_identifier,
+                extras={"msg_info": args[1]}
+            )
+            # Re-enter send() method.
+            self.send(identifier, text, in_reply_to)
+
+        self._meteor_client.call(
+            method="createDirectMessage",
+            params=[identifier.person],
+            callback=query_user_callback
+        )
 
     def query_room(self, room):
         """
