@@ -97,12 +97,12 @@ setuptools.command.build_py.build_py.find_data_files = find_data_files
 
 # Run setup
 setup(
-    name='AoikRocketChatErrbot',
+    name='RocketChat',
 
     version='0.1.0',
 
     description=(
-        'Errbot backend for Rocket.Chat.'
+        'Rocket.Chat backend for Errbot.'
     ),
 
     long_description="""`Documentation on Github

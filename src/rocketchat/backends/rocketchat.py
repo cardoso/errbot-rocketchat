@@ -103,7 +103,7 @@ class CONFIG_KEYS(object):
     attribute names, i.e. CONFIG_KEYS.SERVER_URI == 'SERVER_URI'.
 
     Config values can be overridden by env variables. Config key `SERVER_URI`
-    maps to env variable name `AOIKROCKETCHATERRBOT_SERVER_URI`. Use string
+    maps to env variable name `ROCKETCHAT_SERVER_URI`. Use string
     '0', 'false' or 'no' to mean boolean false in env variable value.
 
     The prefix used when mapping config name to env variable name is defined at
@@ -170,15 +170,15 @@ class CONFIG_KEYS(object):
 
 
 # The backend's config object's attribute name on the config module
-_CONFIG_OBJ_KEY = 'AOIKROCKETCHATERRBOT_CONFIG'
+_CONFIG_OBJ_KEY = 'ROCKETCHAT_CONFIG'
 
 # 5IQNR
 # Prefix used when mapping config name to env variable name.
 #
 # E.g. Config key `SERVER_URI` maps to env variable name
-# `AOIKROCKETCHATERRBOT_SERVER_URI`.
+# `ROCKETCHAT_SERVER_URI`.
 #
-_ENV_VAR_NAME_PREFIX = 'AOIKROCKETCHATERRBOT_'
+_ENV_VAR_NAME_PREFIX = 'ROCKETCHAT_'
 
 
 class RocketChatUser(Person):
@@ -265,7 +265,7 @@ class RocketChatUser(Person):
         return self._person
 
 
-class AoikRocketChatErrbot(ErrBot):
+class RocketChat(ErrBot):
     """
     Errbot backend for Rocket.Chat.
 
@@ -281,7 +281,7 @@ class AoikRocketChatErrbot(ErrBot):
         :return: None.
         """
         # Call super method
-        super(AoikRocketChatErrbot, self).__init__(config)
+        super(RocketChat, self).__init__(config)
 
         # Get the backend's config object
         self._config_obj = getattr(self.bot_config, _CONFIG_OBJ_KEY, None)
@@ -326,7 +326,7 @@ class AoikRocketChatErrbot(ErrBot):
             raise ValueError(error_msg)
 
         # Get logger
-        self._logger = logging.getLogger('aoikrocketchaterrbot')
+        self._logger = logging.getLogger('rocketchat')
 
         # Set logging level
         self._logger.setLevel(log_level)
@@ -428,7 +428,7 @@ class AoikRocketChatErrbot(ErrBot):
         :return: Mode name.
         """
         # Return mode name
-        return 'aoikrocketchaterrbot'
+        return 'rocketchat'
 
     def _log_debug(self, msg):
         """
@@ -695,6 +695,7 @@ class AoikRocketChatErrbot(ErrBot):
             # Disable the meteor client's auto reconnect.
             # Let `serve_forever` handle reconnect.
             auto_reconnect=False,
+            debug=False
         )
 
         # Log message
@@ -752,7 +753,7 @@ class AoikRocketChatErrbot(ErrBot):
             self._meteor_client.connect()
 
         # If have error
-        except:
+        except Exception as e:
             # Log message
             self._log_debug('# ----- Connecting failed -----')
 
@@ -821,7 +822,7 @@ class AoikRocketChatErrbot(ErrBot):
             self._meteor_closed_event.wait()
 
         # If have error
-        except:
+        except Exception as e:
             # Close meteor client.
             #
             # This will cause `self._meteor_closed_callback` to be called,
@@ -1228,7 +1229,7 @@ class AoikRocketChatErrbot(ErrBot):
         :return: None.
         """
         # Call super method to dispatch to plugins
-        super(AoikRocketChatErrbot, self).send_message(mess)
+        super(RocketChat, self).send_message(mess)
 
         # Get original message object.
         #
@@ -1284,13 +1285,10 @@ class AoikRocketChatErrbot(ErrBot):
             # Raise error
             raise ValueError(error_msg)
 
-        # If the original message is not given
+        # If the original message is not given, emulate receiving a message to confirm with.
         if in_reply_to is None:
-            # Get message
-            error_msg = 'Argument `in_reply_to` must be given.'
-
-            # Raise error
-            raise ValueError(error_msg)
+            self.create_reply_msg(identifier, text)
+            return True
 
         # Create message object
         msg_obj = Message(
@@ -1317,6 +1315,23 @@ class AoikRocketChatErrbot(ErrBot):
 
         # Send the message
         self.split_and_send_message(msg_obj)
+
+    def create_reply_msg(self, identifier, text):
+        def query_user_callback(*args, **kwargs):
+            in_reply_to = Message(
+                body=text,
+                frm=identifier,
+                to=self.bot_identifier,
+                extras={"msg_info": args[1]}
+            )
+            # Re-enter send() method.
+            self.send(identifier, text, in_reply_to)
+
+        self._meteor_client.call(
+            method="createDirectMessage",
+            params=[identifier.person],
+            callback=query_user_callback
+        )
 
     def query_room(self, room):
         """
