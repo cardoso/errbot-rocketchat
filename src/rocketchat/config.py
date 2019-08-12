@@ -13,7 +13,7 @@ import logging
 
 
 # Backend name
-BACKEND = 'AoikRocketChatErrbot'
+BACKEND = 'RocketChat'
 
 # Data directory containing data of backends and plugins
 BOT_DATA_DIR = './bot_data'
@@ -37,7 +37,7 @@ BOT_LOG_FILE = './errbot.log'
 BOT_LOG_LEVEL = logging.DEBUG
 
 
-class AOIKROCKETCHATERRBOT_CONFIG(object):
+class ROCKETCHAT_CONFIG(object):
     """
     Config object for AoikRocketChatErrbot.
 
