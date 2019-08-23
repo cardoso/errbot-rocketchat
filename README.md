@@ -13,9 +13,9 @@ Tested working with:
   - [Create docker-compose.yml file](#create-docker-composeyml-file)
   - [Start Rocket.Chat server](#start-rocketchat-server)
   - [Create Rocket.Chat user](#create-rocketchat-user)
-- [Set up AoikRocketChatErrbot](#set-up-aoikrocketchaterrbot)
+- [Set up RocketChatErrbot](#set-up-rocketchaterrbot)
   - [Clone this repository to local](#clone-this-repository-to-local)
-  - [Install AoikRocketChatErrbot](#install-aoikrocketchaterrbot)
+  - [Install RocketChatErrbot](#install-rocketchaterrbot)
   - [Tweak Errbot config module](#tweak-errbot-config-module)
   - [Start Errbot](#start-errbot)
   - [systemd file](#systemd-file)
@@ -115,7 +115,7 @@ Environment="LC_ALL=en_US.UTF-8"
 ExecStart=/home/errbot-runner/errbot-rocketchat/venv/bin/python -m errbot.cli
 Restart=always
 RestartSec=10
-WorkingDirectory=/home/errbot-runner/errbot-rocketchat/src/aoikrocketchaterrbot
+WorkingDirectory=/home/errbot-runner/errbot-rocketchat/src/rocketchat
 User=errbot-runner
 KillSignal=SIGINT
 
