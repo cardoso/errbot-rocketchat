@@ -13,9 +13,9 @@ Tested working with:
   - [Create docker-compose.yml file](#create-docker-composeyml-file)
   - [Start Rocket.Chat server](#start-rocketchat-server)
   - [Create Rocket.Chat user](#create-rocketchat-user)
-- [Set up AoikRocketChatErrbot](#set-up-aoikrocketchaterrbot)
+- [Set up RocketChatErrbot](#set-up-rocketchaterrbot)
   - [Clone this repository to local](#clone-this-repository-to-local)
-  - [Install AoikRocketChatErrbot](#install-aoikrocketchaterrbot)
+  - [Install RocketChatErrbot](#install-rocketchaterrbot)
   - [Tweak Errbot config module](#tweak-errbot-config-module)
   - [Start Errbot](#start-errbot)
   - [systemd file](#systemd-file)
@@ -55,12 +55,12 @@ docker-compose up
 ### Create Rocket.Chat user
 Open `http://127.0.0.1:3000/` in browser.
 
-Create a new user. The default config in AoikRocketChatErrbot uses username
+Create a new user. The default config in rocketchat uses username
 `errbot` and password `errbot`.
 
-## Set up AoikRocketChatErrbot
+## Set up RocketChatErrbot
 - [Clone this repository to local](#clone-this-repository-to-local)
-- [Install AoikRocketChatErrbot](#install-aoikrocketchaterrbot)
+- [Install RocketChatErrbot](#install-rocketchaterrbot)
 - [Tweak Errbot config module](#tweak-errbot-config-module)
 - [Start Errbot](#start-errbot)
 - [systemd file](#systemd-file)
@@ -71,7 +71,7 @@ Run:
 git clone https://github.com/cardoso/errbot-rocketchat
 ```
 
-### Install AoikRocketChatErrbot
+### Install RocketChatErrbot
 Run:
 ```
 cd errbot-rocketchat
@@ -81,13 +81,13 @@ virtualenv venv
 venv/bin/python setup.py install
 ```
 
-This will install AoikRocketChatErrbot's dependency packages, including Errbot.
+This will install RocketChatErrbot's dependency packages, including Errbot.
 
 ### Tweak Errbot config module
 The Errbot config module is located at
-[AoikRocketChatErrbot/src/aoikrocketchaterrbot/config.py](/src/aoikrocketchaterrbot/config.py).
+[errbot-rocketchat/src/rocketchat/config.py](/src/rocketchat/config.py).
 
-Tweak config values under AOIKROCKETCHATERRBOT_CONFIG:
+Tweak config values under ROCKETCHAT_CONFIG:
 - BOT_ADMINS (no @ prefix)
 - SERVER_URI
 - LOGIN_USERNAME
@@ -96,7 +96,7 @@ Tweak config values under AOIKROCKETCHATERRBOT_CONFIG:
 ### Start Errbot
 Run:
 ```
-cd AoikRocketChatErrbot/src/aoikrocketchaterrbot
+cd errbot-rocketchat/src/rocketchat
 
 python -m errbot.cli
 ```
@@ -115,7 +115,7 @@ Environment="LC_ALL=en_US.UTF-8"
 ExecStart=/home/errbot-runner/errbot-rocketchat/venv/bin/python -m errbot.cli
 Restart=always
 RestartSec=10
-WorkingDirectory=/home/errbot-runner/errbot-rocketchat/src/aoikrocketchaterrbot
+WorkingDirectory=/home/errbot-runner/errbot-rocketchat/src/rocketchat
 User=errbot-runner
 KillSignal=SIGINT
 

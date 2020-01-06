@@ -15,6 +15,7 @@ from traceback import format_exc
 # External imports
 from MeteorClient import CollectionData
 from MeteorClient import MeteorClient
+from errbot.backends.base import Card
 from errbot.backends.base import OFFLINE
 from errbot.backends.base import ONLINE
 from errbot.backends.base import Identifier
@@ -1216,6 +1217,60 @@ class RocketChat(ErrBot):
             method='sendMessage',
             params=params,
         )
+
+    def send_card(self, card: Card) -> None:
+        """
+        Send message to meteor server with an attachment.
+
+        :param card: The information used to build the Rocket Chat attachment.
+        :return: None
+        """
+
+        # Get original message info.
+        #
+        # The key is set at 2QTGO
+        #
+        msg_info = card.parent.extras['msg_info']
+
+        # Get room ID
+        room_id = msg_info['rid']
+
+        attachment = {}
+        if card.color:
+            attachment['color'] = card.color
+
+        if card.title:
+            attachment['title'] = card.title
+
+        if card.link:
+            attachment['title_link'] = card.link
+
+        if card.summary:
+            attachment['text'] = card.summary
+
+        if card.image:
+            attachment['image_url'] = card.image
+
+        if card.thumbnail:
+            attachment['thumb_url'] = card.thumbnail
+
+        if len(card.fields) > 0:
+            fields = []
+            for field in card.fields:
+                fields.append({
+                    'title': field[0],
+                    'value': field[1]
+                })
+            attachment['fields'] = fields
+
+        # Send message to meteor server
+        self.send_rocketchat_message(params={
+            'rid': room_id,
+            'msg': card.body,
+            'attachments': [
+                attachment
+            ]
+        })
 
     def send_message(self, mess):
         """
