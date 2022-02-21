@@ -265,6 +265,8 @@ class RocketChatUser(Person):
         # Return user name
         return self._person
 
+    def __eq__(self, __o: object) -> bool:
+        return self._person == __o._person
 
 class RocketChat(ErrBot):
     """
